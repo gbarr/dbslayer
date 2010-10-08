@@ -241,9 +241,11 @@ json_value * dbresult2json(MYSQL_RES * myresult,apr_pool_t *mpool) {
 								json_array_append(orow,json_string_create(mpool,myrow[i]));
 							}
 							break;
+						case MYSQL_TYPE_GEOMETRY:
+							json_array_append(orow,json_b64string_create(mpool,myrow[i],lengths[i]));
+							break;
 						case MYSQL_TYPE_SET:
 						case MYSQL_TYPE_ENUM:
-						case MYSQL_TYPE_GEOMETRY:
 						case MYSQL_TYPE_NULL:
 							json_array_append(orow,json_null_create(mpool));
 							break;
