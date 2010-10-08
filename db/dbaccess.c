@@ -203,60 +203,55 @@ json_value * dbresult2json(MYSQL_RES * myresult,apr_pool_t *mpool) {
 			json_array_append(rows,orow);
 			//unsigned long *lengths = mysql_fetch_lengths(myresult);
 			for(i = 0; i < num_fields; i++) {
-				switch(fields[i].type) {
-					case MYSQL_TYPE_TINY:
-					case MYSQL_TYPE_SHORT:
-					case MYSQL_TYPE_LONG:
-					case MYSQL_TYPE_INT24:
-						json_array_append(orow,myrow[i] ? 
-															json_long_create(mpool,atol(myrow[i] )) 
-															:json_null_create(mpool));
-						break;
-					case MYSQL_TYPE_DECIMAL:
-					case MYSQL_TYPE_NEWDECIMAL:
-					case MYSQL_TYPE_DOUBLE:
-					case MYSQL_TYPE_FLOAT:
-					case MYSQL_TYPE_LONGLONG:
-						json_array_append(orow,myrow[i] ? 
-											json_double_create(mpool,atof(myrow[i]))
-											:json_null_create(mpool));
-						break;
-					case MYSQL_TYPE_BIT:
-					case MYSQL_TYPE_TIMESTAMP:
-					case MYSQL_TYPE_DATE:
-					case MYSQL_TYPE_TIME:
-					case MYSQL_TYPE_DATETIME:
-					case MYSQL_TYPE_YEAR:
-					case MYSQL_TYPE_STRING:
-					case MYSQL_TYPE_VAR_STRING:
-					case MYSQL_TYPE_NEWDATE:
-					case MYSQL_TYPE_VARCHAR:
-						json_array_append(orow,
-								myrow[i] ? json_string_create(mpool,myrow[i]) :
-													json_null_create(mpool) );
-						break;
-					case MYSQL_TYPE_BLOB:
-					case MYSQL_TYPE_TINY_BLOB:
-					case MYSQL_TYPE_MEDIUM_BLOB:
-					case MYSQL_TYPE_LONG_BLOB:
-						//DON'T ASK - it is not 63 it is TEXT 
-						//http://www.mysql.org/doc/refman/5.1/en/c-api-datatypes.html
-						if (fields[i].charsetnr == 63) {  
-/**BINARY - NEEDS TO B64 **/
+				if(myrow[i]) {
+					switch(fields[i].type) {
+						case MYSQL_TYPE_TINY:
+						case MYSQL_TYPE_SHORT:
+						case MYSQL_TYPE_LONG:
+						case MYSQL_TYPE_INT24:
+							json_array_append(orow,json_long_create(mpool,atol(myrow[i])));
+							break;
+						case MYSQL_TYPE_DECIMAL:
+						case MYSQL_TYPE_NEWDECIMAL:
+						case MYSQL_TYPE_DOUBLE:
+						case MYSQL_TYPE_FLOAT:
+						case MYSQL_TYPE_LONGLONG:
+							json_array_append(orow,json_double_create(mpool,atof(myrow[i])));
+							break;
+						case MYSQL_TYPE_BIT:
+						case MYSQL_TYPE_TIMESTAMP:
+						case MYSQL_TYPE_DATE:
+						case MYSQL_TYPE_TIME:
+						case MYSQL_TYPE_DATETIME:
+						case MYSQL_TYPE_YEAR:
+						case MYSQL_TYPE_STRING:
+						case MYSQL_TYPE_VAR_STRING:
+						case MYSQL_TYPE_NEWDATE:
+						case MYSQL_TYPE_VARCHAR:
+							json_array_append(orow,json_string_create(mpool,myrow[i]));
+							break;
+						case MYSQL_TYPE_BLOB:
+						case MYSQL_TYPE_TINY_BLOB:
+						case MYSQL_TYPE_MEDIUM_BLOB:
+						case MYSQL_TYPE_LONG_BLOB:
+							//DON'T ASK - it is not 63 it is TEXT 
+							//http://www.mysql.org/doc/refman/5.1/en/c-api-datatypes.html
+							if (fields[i].charsetnr == 63) {
+								json_array_append(orow,json_null_create(mpool));
+							} else {
+								json_array_append(orow,json_string_create(mpool,myrow[i]));
+							}
+							break;
+						case MYSQL_TYPE_SET:
+						case MYSQL_TYPE_ENUM:
+						case MYSQL_TYPE_GEOMETRY:
+						case MYSQL_TYPE_NULL:
 							json_array_append(orow,json_null_create(mpool));
-						} else {
-							json_array_append(orow,
-									myrow[i] ? json_string_create(mpool,myrow[i]) :
-														json_null_create(mpool) );
-						}
-						break;
-					case MYSQL_TYPE_SET:
-					case MYSQL_TYPE_ENUM:
-					case MYSQL_TYPE_GEOMETRY:
-					case MYSQL_TYPE_NULL:
-							json_array_append(orow,json_null_create(mpool));
-						break;
+							break;
 					}
+				} else {
+					json_array_append(orow,json_null_create(mpool));
+				}
 			}
 		}
 	return result;
