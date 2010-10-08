@@ -157,30 +157,30 @@ json_value * dbresult2json(MYSQL_RES * myresult,apr_pool_t *mpool) {
 						//http://www.mysql.org/doc/refman/5.1/en/c-api-datatypes.html
 						if (fields[i].charsetnr == 63) {  
 /**BINARY - NEEDS TO B64 **/
-							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT"));
-						} else {
 							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_BLOB")); 
+						} else {
+							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT"));
 						}
 						break;
 					case MYSQL_TYPE_TINY_BLOB:
 						if (fields[i].charsetnr == 63) {  
-							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT")); 
-						} else {
 							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TINY_BLOB")); 
+						} else {
+							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT"));
 						}
 						break;
 					case MYSQL_TYPE_MEDIUM_BLOB:
 						if (fields[i].charsetnr == 63) {  
-							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT")); 
-						} else {
 							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_MEDIUM_BLOB"));
+						} else {
+							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT"));
 						}
 						break;
 					case MYSQL_TYPE_LONG_BLOB:
 						if (fields[i].charsetnr == 63) {  
-							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT")); 
-						} else {
 							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_LONG_BLOB")); 
+						} else {
+							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT"));
 						}
 						break;
 					case MYSQL_TYPE_SET:
