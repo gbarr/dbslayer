@@ -156,7 +156,6 @@ json_value * dbresult2json(MYSQL_RES * myresult,apr_pool_t *mpool) {
 						//DON'T ASK - it is not 63 it is TEXT 
 						//http://www.mysql.org/doc/refman/5.1/en/c-api-datatypes.html
 						if (fields[i].charsetnr == 63) {  
-/**BINARY - NEEDS TO B64 **/
 							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_BLOB")); 
 						} else {
 							json_array_append(coltypes,json_string_create(mpool,"MYSQL_TYPE_TEXT"));
@@ -201,7 +200,7 @@ json_value * dbresult2json(MYSQL_RES * myresult,apr_pool_t *mpool) {
 		while( (myrow = mysql_fetch_row(myresult)) !=NULL) { 
 			json_value *orow = json_array_create(mpool,num_fields);
 			json_array_append(rows,orow);
-			//unsigned long *lengths = mysql_fetch_lengths(myresult);
+			unsigned long *lengths = mysql_fetch_lengths(myresult);
 			for(i = 0; i < num_fields; i++) {
 				if(myrow[i]) {
 					switch(fields[i].type) {
@@ -236,8 +235,8 @@ json_value * dbresult2json(MYSQL_RES * myresult,apr_pool_t *mpool) {
 						case MYSQL_TYPE_LONG_BLOB:
 							//DON'T ASK - it is not 63 it is TEXT 
 							//http://www.mysql.org/doc/refman/5.1/en/c-api-datatypes.html
-							if (fields[i].charsetnr == 63) {
-								json_array_append(orow,json_null_create(mpool));
+							if (fields[i].charsetnr == 63 && lengths[i] > 0) {
+								json_array_append(orow,json_b64string_create(mpool,myrow[i],lengths[i]));
 							} else {
 								json_array_append(orow,json_string_create(mpool,myrow[i]));
 							}

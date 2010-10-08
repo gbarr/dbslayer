@@ -51,6 +51,7 @@ json_value* json_null_create(apr_pool_t *mpool);
 json_value* json_long_create(apr_pool_t *mpool,long number);
 json_value* json_double_create(apr_pool_t *mpool,double number);
 json_value* json_string_create(apr_pool_t *mpool,const char *string);
+json_value* json_b64string_create(apr_pool_t *mpool,const char *data,int len);
 json_value* json_boolean_create(apr_pool_t *mpool,char b);
 json_value* json_object_create(apr_pool_t *mpool);
 json_value* json_array_create(apr_pool_t *mpool,int size);

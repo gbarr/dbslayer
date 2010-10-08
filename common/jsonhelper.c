@@ -20,6 +20,17 @@ json_value* json_double_create(apr_pool_t *mpool,double number){
 	out->value.dnumber = number;
 	return out;
 }
+json_value* json_b64string_create(apr_pool_t *mpool,const char *data, int len) {
+	json_value *out = json_object_create(mpool);
+	json_value *str = apr_palloc(mpool,sizeof(json_value));
+	char *buf = apr_palloc(mpool,apr_base64_encode_len(len)+1);
+	int b64len = apr_base64_encode(buf,data,len);
+	buf[b64len] = '\0';
+	str->type = JSON_STRING;
+	str->value.string = buf;
+	json_object_add(out,"$b64",str);
+	return out;
+}
 json_value* json_string_create(apr_pool_t *mpool,const char *string) {
 	json_value *out = apr_palloc(mpool,sizeof(json_value));
 	out->type = JSON_STRING;
